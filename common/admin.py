@@ -1,3 +1,11 @@
 from django.contrib import admin
 
-# Register your models here.
+from common.models import Region
+
+
+class RegionAdmin(admin.ModelAdmin):
+
+    list_display = ('id', 'name', 'code')
+
+
+admin.site.register(Region, RegionAdmin)

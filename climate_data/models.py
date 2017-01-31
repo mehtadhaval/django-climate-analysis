@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+from common.fields import CustomFloatField
 from common.models import Audit, Region
 
 
@@ -43,12 +44,16 @@ class Request(ClimateDataTypeMixin, Audit):
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='requests')
     region = models.ForeignKey(Region, related_name='requests')
-    status = models.CharField(max_length=32, choices=STATUS_CHOICES)
+    status = models.CharField(max_length=32, choices=STATUS_CHOICES, default=STATUS_SUBMITTED)
 
     def __str__(self):
         return 'Request by {user} for {type} data for {region}'.format(
             user=self.user, type=self.type, region=self.region
         )
+
+    @property
+    def url(self):
+        return settings.MET_DATA_BASE_URL.format(region=self.region.code, type=self.type)
 
 
 class ClimateData(ClimateDataTypeMixin, Audit):
@@ -74,23 +79,23 @@ class ClimateData(ClimateDataTypeMixin, Audit):
     region = models.ForeignKey(Region)
     year = models.IntegerField()
     unit = models.CharField(max_length=32, choices=UNIT_CHOICES)
-    jan = models.FloatField(null=True, blank=True)
-    feb = models.FloatField(null=True, blank=True)
-    mar = models.FloatField(null=True, blank=True)
-    apr = models.FloatField(null=True, blank=True)
-    may = models.FloatField(null=True, blank=True)
-    jun = models.FloatField(null=True, blank=True)
-    jul = models.FloatField(null=True, blank=True)
-    aug = models.FloatField(null=True, blank=True)
-    sep = models.FloatField(null=True, blank=True)
-    oct = models.FloatField(null=True, blank=True)
-    nov = models.FloatField(null=True, blank=True)
-    dec = models.FloatField(null=True, blank=True)
-    win = models.FloatField(null=True, blank=True)
-    spr = models.FloatField(null=True, blank=True)
-    sum = models.FloatField(null=True, blank=True)
-    aut = models.FloatField(null=True, blank=True)
-    ann = models.FloatField(null=True, blank=True)
+    jan = CustomFloatField(null=True, blank=True)
+    feb = CustomFloatField(null=True, blank=True)
+    mar = CustomFloatField(null=True, blank=True)
+    apr = CustomFloatField(null=True, blank=True)
+    may = CustomFloatField(null=True, blank=True)
+    jun = CustomFloatField(null=True, blank=True)
+    jul = CustomFloatField(null=True, blank=True)
+    aug = CustomFloatField(null=True, blank=True)
+    sep = CustomFloatField(null=True, blank=True)
+    oct = CustomFloatField(null=True, blank=True)
+    nov = CustomFloatField(null=True, blank=True)
+    dec = CustomFloatField(null=True, blank=True)
+    win = CustomFloatField(null=True, blank=True)
+    spr = CustomFloatField(null=True, blank=True)
+    sum = CustomFloatField(null=True, blank=True)
+    aut = CustomFloatField(null=True, blank=True)
+    ann = CustomFloatField(null=True, blank=True)
 
     def save(self, *args, **kwargs):
         if not self.unit:

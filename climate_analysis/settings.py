@@ -127,6 +127,9 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+MET_DATA_BASE_URL = 'http://www.metoffice.gov.uk/pub/data/weather/uk/climate/datasets/{type}/date/{region}.txt'
+MET_DATA_SKIP_LINES = 7
+
 try:
     from .local_settings import *
 except ImportError:
