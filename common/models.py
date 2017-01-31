@@ -37,3 +37,9 @@ class Region(Audit, SoftDelete):
 
     def __str__(self):
         return self.name
+
+    def natural_key(self):
+        return (self.code, )
+
+    def get_by_natural_key(self, code):
+        return Region.objects.get(code=code)

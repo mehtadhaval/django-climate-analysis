@@ -1,0 +1,42 @@
+[
+{
+    "model": "common.region",
+    "fields": {
+        "created": "2017-01-31T17:42:10.925Z",
+        "updated": "2017-01-31T17:42:10.925Z",
+        "is_active": true,
+        "name": "UK",
+        "code": "UK"
+    }
+},
+{
+    "model": "common.region",
+    "fields": {
+        "created": "2017-01-31T18:38:38.784Z",
+        "updated": "2017-01-31T18:38:38.784Z",
+        "is_active": true,
+        "name": "England",
+        "code": "England"
+    }
+},
+{
+    "model": "common.region",
+    "fields": {
+        "created": "2017-01-31T18:38:51.673Z",
+        "updated": "2017-01-31T18:38:51.673Z",
+        "is_active": true,
+        "name": "Wales",
+        "code": "Wales"
+    }
+},
+{
+    "model": "common.region",
+    "fields": {
+        "created": "2017-01-31T18:39:06.249Z",
+        "updated": "2017-01-31T18:39:06.249Z",
+        "is_active": true,
+        "name": "Scotland",
+        "code": "Scotland"
+    }
+}
+]
