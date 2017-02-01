@@ -42,7 +42,7 @@ class Request(ClimateDataTypeMixin, Audit):
         (STATUS_FAILED, _('Failed')),
     )
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='requests')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='requests', null=True)
     region = models.ForeignKey(Region, related_name='requests')
     status = models.CharField(max_length=32, choices=STATUS_CHOICES, default=STATUS_SUBMITTED)
 
