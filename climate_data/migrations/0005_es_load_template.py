@@ -10,7 +10,7 @@ from elasticsearch.client import Elasticsearch
 
 
 def load_es_template(apps, schema_editor):
-    es = Elasticsearch(hosts=[settings.ES_URL])
+    es = Elasticsearch(hosts=[settings.ES_URL], verify_certs=False)
     es.put_template(id="climate_data_template", body=json.dumps({
         "template": "climate_data",
         "mappings": {

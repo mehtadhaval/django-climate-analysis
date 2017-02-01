@@ -33,7 +33,7 @@ def process_request(self, request_id):
                 file.write(chunk)
 
         with reader.ClimateDataFileReader(file_name) as file:
-            es = Elasticsearch(hosts=[settings.ES_URL])
+            es = Elasticsearch(hosts=[settings.ES_URL], verify_certs=False)
             for record in file:
                 ClimateData.objects.update_or_create(
                     region_id=request.region_id, type=request.type, year=record.get('year'),
