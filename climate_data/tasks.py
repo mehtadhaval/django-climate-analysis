@@ -2,15 +2,13 @@ import contextlib
 import logging
 import os
 import tempfile
-from datetime import date
 
 import requests
-from django.conf import settings
-from elasticsearch import Elasticsearch
 
 from climate_analysis.celery import app
 from climate_data import reader
-from climate_data.models import Request, ClimateData, ClimateTimeSeriesData
+from climate_data.models import Request
+from climate_data.processors import ClimateDataHandler
 
 logger = logging.getLogger(__name__)
 
@@ -31,29 +29,11 @@ def process_request(self, request_id):
             file_name = file.name
             for chunk in response.iter_content(chunk_size=1024):
                 file.write(chunk)
-
+        handler = ClimateDataHandler()
         with reader.ClimateDataFileReader(file_name) as file:
-            es = Elasticsearch(hosts=[settings.ES_URL], verify_certs=False)
             for record in file:
-                ClimateData.objects.update_or_create(
-                    region_id=request.region_id, type=request.type, year=record.get('year'),
-                    defaults=record
-                )
-                # store data in timeseries table
-                for month in range(1, 13):
-                    record_date = date(int(record.get("year")), month, 1)
-                    month_name = record_date.strftime("%b").lower()
-                    obj, created = ClimateTimeSeriesData.objects.update_or_create(
-                        region_id=request.region_id, type=request.type, record_date=record_date,
-                        defaults={
-                            'measurement': record.get(month_name)
-                        }
-                    )
-                    es.index(index="climate_data", doc_type=request.type, id=obj.id, body={
-                        "measurement": float(obj.measurement),
-                        "region": obj.region.name,
-                        "record_date": obj.record_date
-                    })
+                handler.process(record, request.type, request.region)
+
     except Exception as e:
         logger.exception("Error occurred while processing request")
         request.status = Request.STATUS_FAILED
