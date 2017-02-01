@@ -5,6 +5,8 @@ import tempfile
 from datetime import date
 
 import requests
+from django.conf import settings
+from elasticsearch import Elasticsearch
 
 from climate_analysis.celery import app
 from climate_data import reader
@@ -31,6 +33,7 @@ def process_request(self, request_id):
                 file.write(chunk)
 
         with reader.ClimateDataFileReader(file_name) as file:
+            es = Elasticsearch(hosts=[settings.ES_URL])
             for record in file:
                 ClimateData.objects.update_or_create(
                     region_id=request.region_id, type=request.type, year=record.get('year'),
@@ -40,12 +43,17 @@ def process_request(self, request_id):
                 for month in range(1, 13):
                     record_date = date(int(record.get("year")), month, 1)
                     month_name = record_date.strftime("%b").lower()
-                    ClimateTimeSeriesData.objects.update_or_create(
+                    obj, created = ClimateTimeSeriesData.objects.update_or_create(
                         region_id=request.region_id, type=request.type, record_date=record_date,
                         defaults={
                             'measurement': record.get(month_name)
                         }
                     )
+                    es.index(index="climate_data", doc_type=request.type, id=obj.id, body={
+                        "measurement": float(obj.measurement),
+                        "region": obj.region.name,
+                        "record_date": obj.record_date
+                    })
     except Exception as e:
         logger.exception("Error occurred while processing request")
         request.status = Request.STATUS_FAILED
