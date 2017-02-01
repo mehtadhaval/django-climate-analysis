@@ -31,7 +31,7 @@ class SoftDelete(models.Model):
 class RegionManager(models.Manager):
 
     def get_by_natural_key(self, code):
-        return Region.objects.filter(code=code).first()
+        return Region.objects.get(code=code)
 
 
 class Region(Audit, SoftDelete):
