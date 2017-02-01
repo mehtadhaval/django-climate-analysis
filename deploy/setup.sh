@@ -25,7 +25,7 @@ timedatectl set-timezone America/Los_Angeles
 systemctl enable ntpd
 systemctl start ntpd
 
-# *****rabitmq and celery*****
+# *****rabitmq*****
 
 echo "# setup rabbitmq"
 chkconfig rabbitmq-server on
@@ -33,15 +33,6 @@ systemctl enable rabbitmq-server
 systemctl start rabbitmq-server
 rabbitmqctl status
 netstat -anop | grep 5672
-
-echo "# create celery log folders :"
-mkdir /var/log/celery -p
-chown -R deploy:deploy /var/log/celery
-mkdir /etc/celery -p
-chown -R deploy:deploy /etc/celery
-yes | cp $CURR_DIR/celery/celery.service /etc/systemd/system/celery.service
-systemctl daemon-reload
-systemctl enable celery
 
 # *****nginx*****
 rm -rf /etc/nginx/conf.d/*.conf
@@ -57,14 +48,20 @@ yum -y install java-1.8.0-openjdk.x86_64
 java -version
 mkdir -p /mnt/strive/softwares/
 cd /mnt/strive/softwares/
-rpm -iUvh https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-5.0.1.noarch.rpm || true
+rpm -iUvh https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.0.2.rpm || true
 systemctl enable elasticsearch.service
 rm -f /etc/elasticsearch/elasticsearch.yml
-cp $CURR_DIR/elasticsearch.yml /etc/elasticsearch/elasticsearch.yml
+cp $CURR_DIR/elasticsearch/elasticsearch.yml /etc/elasticsearch/elasticsearch.yml
 systemctl start  elasticsearch.service
-curl -X GET 'http://localhost:9200' || true
+curl -X GET 'http://127.0.0.1:9200' || true
 netstat -naop | grep 9200
-curl -X GET 'http://localhost:9200' || true
+curl -X GET 'http://127.0.0.1:9200' || true
+
+# *******kibana*******
+rpm -iUvh https://artifacts.elastic.co/downloads/kibana/kibana-5.2.0-x86_64.rpm || true
+systemctl daemon-reload
+systemctl enable kibana.service
+systemctl restart kibana.service
 
 # *******uwsgi*******
 mkdir /var/log/uwsgi -p
@@ -76,14 +73,16 @@ yes | cp $CURR_DIR/uwsgi/uwsgi_emperor.ini /etc/uwsgi/emperor.ini
 yes | cp -R $CURR_DIR/uwsgi/vassals/*.ini /etc/uwsgi/vassals/
 chown -R deploy:deploy /etc/uwsgi
 systemctl daemon-reload
-systemctl enable emperor.uwsgi
+systemctl enable uwsgi
 
-# *******kibana*******
-rpm --import https://packages.elastic.co/GPG-KEY-elasticsearch
-yes | cp $CURR_DIR/kibana/kibana.repo /etc/yum.repos.d/
-yum -y install kibana
+# *******celery*******
+echo "# create celery log folders :"
+mkdir /var/log/celery -p
+chown -R deploy:deploy /var/log/celery
+mkdir /etc/celery -p
+chown -R deploy:deploy /etc/celery
+yes | cp $CURR_DIR/celery/celery.service /etc/systemd/system/celery.service
 systemctl daemon-reload
-systemctl enable kibana.service
-systemctl restart kibana.service
+systemctl enable celery
 
 echo "Setup successful!!"
