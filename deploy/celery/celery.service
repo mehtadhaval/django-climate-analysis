@@ -1,0 +1,30 @@
+[Unit]
+Description=Celery Service Worker
+After=network.target
+After=syslog.target
+Before=nginx.service
+After=mysqld.service
+After=rabbitmq-server.service
+After=elasticsearch.service
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+Type=forking
+
+User=deploy
+
+# Run ExecStartPre with root-permissions
+PermissionsStartOnly=true
+ExecStartPre=-/usr/bin/mkdir /var/run/celery
+ExecStartPre=/usr/bin/chown -R deploy:deploy /var/run/celery/
+
+# %%N is required to distinguish from %N, which is replaced by systemd while starting service
+ExecStart=/home/deploy/venv/bin/celery multi start default_worker -A climate_analysis --logfile=/var/log/celery/%%N.log --pidfile=/var/run/celery/%%N.pid --autoscale=4,2 --workdir=/home/deploy/django-climate-analysis/
+ExecStop=/home/deploy/venv/bin/celery multi stopwait default_worker --pidfile=/var/run/celery/%%N.pid
+ExecStart=/home/deploy/venv/bin/celery multi restart default_worker -A climate_analysis --logfile=/var/log/celery/%%N.log --pidfile=/var/run/celery/%%N.pid --autoscale=4,2 --workdir=/home/deploy/django-climate-analysis/
+
+Restart=always
+
+NotifyAccess=all

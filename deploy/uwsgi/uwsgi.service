@@ -1,0 +1,27 @@
+[Unit]
+Description=uWSGI Emperor
+After=network.target
+After=syslog.target
+Before=nginx.service
+After=mysqld.service
+After=redis.service
+After=rabbitmq-server.service
+After=elasticsearch.service
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+Type=notify
+
+# Run ExecStartPre with root-permissions
+PermissionsStartOnly=true
+ExecStartPre=-/usr/bin/mkdir /var/run/uwsgi
+ExecStartPre=/usr/bin/chown -R deploy:deploy /var/run/uwsgi/
+ExecStart=/home/deploy/venv/bin/uwsgi --ini /etc/uwsgi/emperor.ini
+
+KillSignal=SIGQUIT
+
+Restart=always
+
+NotifyAccess=all
