@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from climate_data import tasks
-from climate_data.models import Request, ClimateData
+from climate_data.models import Request, ClimateData, ClimateTimeSeriesData
 
 
 class RequestAdmin(admin.ModelAdmin):
@@ -33,5 +33,12 @@ class ClimateDataAdmin(admin.ModelAdmin):
     search_fields = ('year',)
 
 
+class ClimateTimeSeriesDataAdmin(admin.ModelAdmin):
+    list_display = ('id', 'region', 'type', 'record_date', 'measurement')
+    list_filter = ('region', 'type')
+    date_hierarchy = 'record_date'
+
+
 admin.site.register(Request, RequestAdmin)
 admin.site.register(ClimateData, ClimateDataAdmin)
+admin.site.register(ClimateTimeSeriesData, ClimateTimeSeriesDataAdmin)

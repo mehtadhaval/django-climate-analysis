@@ -28,6 +28,12 @@ class SoftDelete(models.Model):
         abstract = True
 
 
+class RegionManager(models.Manager):
+
+    def get_by_natural_key(self, code):
+        return Region.objects.filter(code=code).first()
+
+
 class Region(Audit, SoftDelete):
     """
     Region list
@@ -35,11 +41,10 @@ class Region(Audit, SoftDelete):
     name = models.CharField(max_length=64)
     code = models.CharField(max_length=64)
 
+    objects = RegionManager()
+
     def __str__(self):
         return self.name
 
     def natural_key(self):
-        return (self.code, )
-
-    def get_by_natural_key(self, code):
-        return Region.objects.get(code=code)
+        return (self.code,)

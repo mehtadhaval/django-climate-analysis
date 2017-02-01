@@ -2,12 +2,13 @@ import contextlib
 import logging
 import os
 import tempfile
+from datetime import date
 
 import requests
 
 from climate_analysis.celery import app
 from climate_data import reader
-from climate_data.models import Request, ClimateData
+from climate_data.models import Request, ClimateData, ClimateTimeSeriesData
 
 logger = logging.getLogger(__name__)
 
@@ -35,6 +36,16 @@ def process_request(self, request_id):
                     region_id=request.region_id, type=request.type, year=record.get('year'),
                     defaults=record
                 )
+                # store data in timeseries table
+                for month in range(1, 13):
+                    record_date = date(int(record.get("year")), month, 1)
+                    month_name = record_date.strftime("%b").lower()
+                    ClimateTimeSeriesData.objects.update_or_create(
+                        region_id=request.region_id, type=request.type, record_date=record_date,
+                        defaults={
+                            'measurement': record.get(month_name)
+                        }
+                    )
     except Exception as e:
         logger.exception("Error occurred while processing request")
         request.status = Request.STATUS_FAILED

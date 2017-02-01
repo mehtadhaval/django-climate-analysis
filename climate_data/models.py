@@ -76,7 +76,7 @@ class ClimateData(ClimateDataTypeMixin, Audit):
         ClimateDataTypeMixin.TYPE_RAINFALL: UNIT_MM
     }
 
-    region = models.ForeignKey(Region)
+    region = models.ForeignKey(Region, related_name='climate_data')
     year = models.IntegerField()
     unit = models.CharField(max_length=32, choices=UNIT_CHOICES)
     jan = CustomFloatField(null=True, blank=True)
@@ -108,3 +108,17 @@ class ClimateData(ClimateDataTypeMixin, Audit):
 
     def __str__(self):
         return '{type} data for {region} for {year}'.format(type=self.type, region=self.region, year=self.year)
+
+
+class ClimateTimeSeriesData(ClimateDataTypeMixin, Audit):
+
+    record_date = models.DateField()
+    measurement = CustomFloatField(null=True, blank=True)
+    region = models.ForeignKey(Region, related_name='timeseries_data')
+
+    def __str__(self):
+        return '{type} data for {region} for {timestamp}'.format(type=self.type, region=self.region, timestamp=self.record_date)
+
+    class Meta:
+        verbose_name = _('Climate TimeSeries Data')
+        verbose_name_plural = _('Climate TimeSeries Data')
