@@ -64,8 +64,8 @@ class ClimateData(ClimateDataTypeMixin, Audit):
 
     UNIT_CHOICES = (
         (UNIT_DEGREES, UNIT_DEGREES),
-        (UNIT_TOTAL_HOURS, UNIT_DEGREES),
-        (UNIT_MM, UNIT_DEGREES)
+        (UNIT_TOTAL_HOURS, UNIT_TOTAL_HOURS),
+        (UNIT_MM, UNIT_MM)
     )
 
     TYPE_UNIT_MAP = {
