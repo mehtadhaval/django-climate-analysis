@@ -68,5 +68,19 @@
         "searchSourceJSON": "{\"index\":\"climate_data\",\"query\":{\"query_string\":{\"query\":\"_type:\\\"normalized_data\\\"\",\"analyze_wildcard\":true}},\"filter\":[]}"
       }
     }
+  },
+  {
+    "_id": "Climate-data-Average-Rainfall-Region-wise",
+    "_type": "visualization",
+    "_source": {
+      "title": "Climate data - Average Rainfall Region wise",
+      "visState": "{\"aggs\":[{\"enabled\":true,\"id\":\"2\",\"params\":{\"customInterval\":\"2h\",\"customLabel\":\"Date\",\"extended_bounds\":{},\"field\":\"record_date\",\"interval\":\"M\",\"min_doc_count\":1},\"schema\":\"segment\",\"type\":\"date_histogram\"},{\"enabled\":true,\"id\":\"3\",\"params\":{\"customLabel\":\"Average Rainfall (mm)\",\"field\":\"rainfall\"},\"schema\":\"metric\",\"type\":\"avg\"},{\"enabled\":true,\"id\":\"4\",\"params\":{\"field\":\"region\",\"order\":\"desc\",\"orderBy\":\"3\",\"row\":true,\"size\":5},\"schema\":\"split\",\"type\":\"terms\"}],\"listeners\":{},\"params\":{\"addLegend\":true,\"addTimeMarker\":false,\"addTooltip\":true,\"defaultYExtents\":false,\"drawLinesBetweenPoints\":true,\"interpolate\":\"linear\",\"legendPosition\":\"right\",\"radiusRatio\":9,\"scale\":\"linear\",\"setYExtents\":false,\"shareYAxis\":true,\"showCircles\":true,\"smoothLines\":false,\"times\":[],\"yAxis\":{}},\"title\":\"Climate data - Average Rainfall Region wise\",\"type\":\"line\"}",
+      "uiStateJSON": "{\"vis\":{\"legendOpen\":false}}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"climate_data\",\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}},\"filter\":[]}"
+      }
+    }
   }
 ]

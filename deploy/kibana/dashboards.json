@@ -1,14 +1,14 @@
 [
   {
-    "_id": "Climate-Data-Temperature-Deviation-vs.-Rainfall",
+    "_id": "Climate-Data-Rainfall",
     "_type": "dashboard",
     "_source": {
-      "title": "Climate Data - Temperature Deviation vs. Rainfall",
+      "title": "Climate Data - Rainfall",
       "hits": 0,
       "description": "",
-      "panelsJSON": "[{\"col\":1,\"id\":\"Climate-data-Average-Temperature-Deviation\",\"panelIndex\":1,\"row\":1,\"size_x\":12,\"size_y\":4,\"type\":\"visualization\"},{\"col\":1,\"id\":\"Climate-data-Average-Rainfall\",\"panelIndex\":2,\"row\":5,\"size_x\":12,\"size_y\":4,\"type\":\"visualization\"}]",
+      "panelsJSON": "[{\"id\":\"Climate-data-Average-Rainfall-Region-wise\",\"type\":\"visualization\",\"panelIndex\":1,\"size_x\":12,\"size_y\":7,\"col\":1,\"row\":1}]",
       "optionsJSON": "{\"darkTheme\":false}",
-      "uiStateJSON": "{\"P-2\":{\"vis\":{\"legendOpen\":true}}}",
+      "uiStateJSON": "{}",
       "version": 1,
       "timeRestore": true,
       "timeTo": "now",
@@ -19,7 +19,7 @@
         "value": 0
       },
       "kibanaSavedObjectMeta": {
-        "searchSourceJSON": "{\"filter\":[{\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"region:\\\"UK\\\"\"}}}]}"
+        "searchSourceJSON": "{\"filter\":[{\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}}}]}"
       }
     }
   },
@@ -44,6 +44,30 @@
       },
       "kibanaSavedObjectMeta": {
         "searchSourceJSON": "{\"filter\":[{\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}}}]}"
+      }
+    }
+  },
+  {
+    "_id": "Climate-Data-Temperature-Deviation-vs.-Rainfall",
+    "_type": "dashboard",
+    "_source": {
+      "title": "Climate Data - Temperature Deviation vs. Rainfall",
+      "hits": 0,
+      "description": "",
+      "panelsJSON": "[{\"col\":1,\"id\":\"Climate-data-Average-Temperature-Deviation\",\"panelIndex\":1,\"row\":1,\"size_x\":12,\"size_y\":4,\"type\":\"visualization\"},{\"col\":1,\"id\":\"Climate-data-Average-Rainfall\",\"panelIndex\":2,\"row\":5,\"size_x\":12,\"size_y\":4,\"type\":\"visualization\"}]",
+      "optionsJSON": "{\"darkTheme\":false}",
+      "uiStateJSON": "{\"P-2\":{\"vis\":{\"legendOpen\":true}}}",
+      "version": 1,
+      "timeRestore": true,
+      "timeTo": "now",
+      "timeFrom": "now-5y",
+      "refreshInterval": {
+        "display": "Off",
+        "pause": false,
+        "value": 0
+      },
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[{\"query\":{\"query_string\":{\"query\":\"region:\\\"UK\\\"\",\"analyze_wildcard\":true}}}]}"
       }
     }
   }
