@@ -36,6 +36,9 @@ def load_es_template(apps, schema_editor):
                     },
                     "sunshine": {
                         "type": "double"
+                    },
+                    "region": {
+                        "type": "keyword"
                     }
                 }
             }

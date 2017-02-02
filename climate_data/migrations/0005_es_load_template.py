@@ -18,6 +18,9 @@ def load_es_template(apps, schema_editor):
                 "properties": {
                     "measurement": {
                         "type": "double"
+                    },
+                    "region": {
+                        "type": "keyword"
                     }
                 }
             }
