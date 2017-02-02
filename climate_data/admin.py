@@ -14,6 +14,8 @@ class RequestAdmin(admin.ModelAdmin):
         if not obj.id:
             obj.user = request.user
         super(RequestAdmin, self).save_model(request, obj, form, change)
+        if obj.status == Request.STATUS_SUBMITTED:
+            tasks.process_request.delay(obj.id)
 
     def process_request(self, request, queryset):
         for request in queryset:
