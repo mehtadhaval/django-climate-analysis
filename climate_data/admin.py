@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from climate_data import tasks
-from climate_data.models import Request, ClimateData, ClimateTimeSeriesData
+from climate_data.models import Request, ClimateData, ClimateNormalizedData
 
 
 class RequestAdmin(admin.ModelAdmin):
@@ -39,6 +39,12 @@ class ClimateTimeSeriesDataAdmin(admin.ModelAdmin):
     date_hierarchy = 'record_date'
 
 
+class ClimateNormalizedDataAdmin(admin.ModelAdmin):
+    list_display = ('id', 'region', 'record_date', 'tmin', 'tmax', 'tmean', 'rainfall', 'sunshine', 'updated')
+    list_filter = ('region',)
+    date_hierarchy = 'record_date'
+
+
 admin.site.register(Request, RequestAdmin)
 admin.site.register(ClimateData, ClimateDataAdmin)
-admin.site.register(ClimateTimeSeriesData, ClimateTimeSeriesDataAdmin)
+admin.site.register(ClimateNormalizedData, ClimateNormalizedDataAdmin)

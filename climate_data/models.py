@@ -122,3 +122,26 @@ class ClimateTimeSeriesData(ClimateDataTypeMixin, Audit):
     class Meta:
         verbose_name = _('Climate TimeSeries Data')
         verbose_name_plural = _('Climate TimeSeries Data')
+
+
+class ClimateNormalizedData(Audit):
+    region = models.ForeignKey(Region, related_name='normalized_data')
+    tmax = CustomFloatField(null=True, blank=True)
+    tmin = CustomFloatField(null=True, blank=True)
+    tmean = CustomFloatField(null=True, blank=True)
+    rainfall = CustomFloatField(null=True, blank=True)
+    sunshine = CustomFloatField(null=True, blank=True)
+    tdev = CustomFloatField(null=True, blank=True, help_text=_('deviation in temperature (Max - Min)'))
+    record_date = models.DateField()
+
+    def save(self, *args, **kwargs):
+        if self.tmax and self.tmin:
+            self.tdev = self.tmax - self.tmin
+        super(ClimateNormalizedData, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return 'Data for {region} for {timestamp}'.format(region=self.region, timestamp=self.record_date)
+
+    class Meta:
+        verbose_name = _('Normalized Climate data')
+        verbose_name_plural = _('Normalized Climate data')

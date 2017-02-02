@@ -4,7 +4,7 @@ from datetime import date
 from django.conf import settings
 from elasticsearch.client import Elasticsearch
 
-from climate_data.models import ClimateData, ClimateTimeSeriesData
+from climate_data.models import ClimateData, ClimateTimeSeriesData, ClimateNormalizedData
 
 logger = logging.getLogger(__name__)
 
@@ -105,13 +105,33 @@ class ESNormalizedDataStoreProcessor(ESInitializerMixin, ClimateDataProcessor):
             logger.exception("Error while indexing Normalized climate data to ES. ID %s", obj_id)
 
 
+class NormalizedDataStoreProcessor(ClimateDataProcessor):
+    """
+    Stores data in normalized format, i.e. single record for a month with other data stored as a column
+    """
+
+    def process_normalized_data(self, record, type, region, month):
+        year = int(record.get("year"))
+        record_date = date(year, month, 1)
+        month_name = record_date.strftime("%b").lower()
+        try:
+            ClimateNormalizedData.objects.update_or_create(
+                region=region, record_date__year=year, record_date__month=month, defaults={
+                    type.lower(): float(record.get(month_name)), 'record_date': record_date
+                }
+            )
+        except Exception:
+            logger.exception("error %s %s", region, record_date)
+
+
 class ClimateDataHandler(object):
     # define pipeline here
     _processors = (
         DataStoreProcessor,
-        TimeSeriesDataStoreProcessor,
-        ESTimeSeriesDataStoreProcessor,
-        ESNormalizedDataStoreProcessor
+        # TimeSeriesDataStoreProcessor,
+        # ESTimeSeriesDataStoreProcessor,
+        ESNormalizedDataStoreProcessor,
+        NormalizedDataStoreProcessor
     )
 
     def __init__(self):
